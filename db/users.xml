@@ -41,10 +41,10 @@
 
         <createTable tableName="user_groups">
             <column name="user_id" type="bigint">
-                <constraints primaryKeyName="true" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_user_groups" nullable="false"/>
             </column>
             <column name="group_name" type="varchar(63)">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="PK_user_groups" nullable="false"/>
             </column>
         </createTable>
 
