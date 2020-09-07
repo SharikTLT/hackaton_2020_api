@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Создание таблицы -->
+    <changeSet id="user-0001" author="shariktlt">
+        <createSequence sequenceName="seq_user"
+                        cycle="false"
+                        startValue="1000"
+        />
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(256)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_session">
+            <column name="uuid" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints primaryKeyName="true" nullable="false"/>
+            </column>
+            <column name="last_update" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dead" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_groups">
+            <column name="user_id" type="bigint">
+                <constraints primaryKeyName="true" nullable="false"/>
+            </column>
+            <column name="group_name" type="varchar(63)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- admin:admin -->
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="name" value="Admin"/>
+            <column name="email" value="admin"/>
+            <column name="password_hash" value="$2a$10$SrFq9M2XL43x60.EQkibBeX/36qXtoiTbgdjpRYtqXko6KPZzah5O"/>
+        </insert>
+        <insert tableName="user_groups">
+            <column name="user_id" value="1"/>
+            <column name="group_name" value="admin"/>
+        </insert>
+        <!-- user:user -->
+        <insert tableName="users">
+            <column name="id" value="2"/>
+            <column name="name" value="user"/>
+            <column name="email" value="user"/>
+            <column name="password_hash" value="$2a$10$iKphR1ZlOsLo.9OdGXNLXuNT/13foh2IXltTpILT.rLNxZP/WZqjq"/>
+        </insert>
+
+        <!-- user3:user -->
+        <insert tableName="users">
+            <column name="id" value="3"/>
+            <column name="name" value="user3"/>
+            <column name="email" value="user3"/>
+            <column name="password_hash" value="$2a$10$iKphR1ZlOsLo.9OdGXNLXuNT/13foh2IXltTpILT.rLNxZP/WZqjq"/>
+        </insert>
+        <!-- user4:user -->
+        <insert tableName="users">
+            <column name="id" value="4"/>
+            <column name="name" value="user4"/>
+            <column name="email" value="user4"/>
+            <column name="password_hash" value="$2a$10$iKphR1ZlOsLo.9OdGXNLXuNT/13foh2IXltTpILT.rLNxZP/WZqjq"/>
+        </insert>
+        <!-- user5:user -->
+        <insert tableName="users">
+            <column name="id" value="5"/>
+            <column name="name" value="user5"/>
+            <column name="email" value="user5"/>
+            <column name="password_hash" value="$2a$10$iKphR1ZlOsLo.9OdGXNLXuNT/13foh2IXltTpILT.rLNxZP/WZqjq"/>
+        </insert>
+        <!-- user5:user -->
+        <insert tableName="users">
+            <column name="id" value="6"/>
+            <column name="name" value="user6"/>
+            <column name="email" value="user6"/>
+            <column name="password_hash" value="$2a$10$iKphR1ZlOsLo.9OdGXNLXuNT/13foh2IXltTpILT.rLNxZP/WZqjq"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
