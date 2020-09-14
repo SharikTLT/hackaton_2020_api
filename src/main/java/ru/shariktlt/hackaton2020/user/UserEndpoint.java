@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.shariktlt.hackaton2020.core.dto.ApiResponse;
+import ru.shariktlt.hackaton2020.core.service.AuthorizationService;
 import ru.shariktlt.hackaton2020.user.dto.LoginRq;
 import ru.shariktlt.hackaton2020.user.dto.LoginRs;
+import ru.shariktlt.hackaton2020.user.dto.ModulesRs;
 import ru.shariktlt.hackaton2020.user.dto.RegisterRq;
 import ru.shariktlt.hackaton2020.user.entity.UserSessionEntity;
 
@@ -28,6 +30,12 @@ public class UserEndpoint {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthorizationService auth;
+
+    @Autowired
+    private ModulesService modulesService;
 
     @RequestMapping("/register")
     public ApiResponse<? extends Serializable> register(@RequestBody RegisterRq rq) {
@@ -55,6 +63,17 @@ public class UserEndpoint {
             LOGGER.error("Registration error: {}", e.getMessage());
             return error("Ошибка авторизации");
         }
+    }
+
+    @RequestMapping("/modules")
+    public ApiResponse<? extends Serializable> modules() {
+        return success(
+                new ModulesRs(
+                        modulesService.getUserModules(
+                                auth.getGroup()
+                        )
+                )
+        );
     }
 
 }

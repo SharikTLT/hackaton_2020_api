@@ -8,6 +8,8 @@ import ru.shariktlt.hackaton2020.core.exception.ApiUnauthorized;
 
 import javax.inject.Provider;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorizationService {
@@ -31,5 +33,14 @@ public class AuthorizationService {
             throw new ApiUnauthorized();
         }
         inGroup(groups);
+    }
+
+    public List<GroupsEnum> getGroup() {
+        ClientApiContext ctx = apiContextProvider.get();
+        if (!ctx.isAuthorized()) {
+            throw new ApiForbidden();
+        }
+
+        return ctx.getGroups().stream().map(GroupsEnum::getByName).collect(Collectors.toList());
     }
 }
