@@ -16,11 +16,16 @@ public class AuthorizationService {
     @Autowired
     private Provider<ClientApiContext> apiContextProvider;
 
-    public boolean inGroup(GroupsEnum... groups) {
+    public ClientApiContext getCtx() {
         ClientApiContext ctx = apiContextProvider.get();
         if (!ctx.isAuthorized()) {
             throw new ApiForbidden();
         }
+        return ctx;
+    }
+
+    public boolean inGroup(GroupsEnum... groups) {
+        ClientApiContext ctx = getCtx();
         return Arrays.stream(groups)
                 .map(GroupsEnum::getName)
                 .map(ctx::inGroup)
@@ -32,7 +37,6 @@ public class AuthorizationService {
         if (!inGroup(groups)) {
             throw new ApiUnauthorized();
         }
-        inGroup(groups);
     }
 
     public List<GroupsEnum> getGroup() {
@@ -40,7 +44,6 @@ public class AuthorizationService {
         if (!ctx.isAuthorized()) {
             throw new ApiForbidden();
         }
-
         return ctx.getGroups().stream().map(GroupsEnum::getByName).collect(Collectors.toList());
     }
 }
