@@ -3,14 +3,20 @@ package ru.shariktlt.hackaton2020.order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.shariktlt.hackaton2020.core.dto.ApiResponse;
+import ru.shariktlt.hackaton2020.core.dto.PaginatedRequest;
+import ru.shariktlt.hackaton2020.core.dto.PaginatedResponse;
 import ru.shariktlt.hackaton2020.core.service.AuthorizationService;
-import ru.shariktlt.hackaton2020.order.dto.CreateOrderDto;
-import ru.shariktlt.hackaton2020.order.dto.OrderStatus;
+import ru.shariktlt.hackaton2020.core.service.ClientApiContext;
+import ru.shariktlt.hackaton2020.order.dto.CreateOrderDtoRq;
+import ru.shariktlt.hackaton2020.order.dto.MultipleOrderTranslate;
+import ru.shariktlt.hackaton2020.order.dto.SingleOrderTranlsate;
+import ru.shariktlt.hackaton2020.order.entity.OrdersTranslateEntity;
+import ru.shariktlt.hackaton2020.user.entity.UserEntity;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.shariktlt.hackaton2020.core.dto.ApiResponse.error;
 import static ru.shariktlt.hackaton2020.core.dto.ApiResponse.success;
@@ -23,19 +29,43 @@ public class OrderEndpoint {
     @Autowired
     private AuthorizationService auth;
 
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping("/create")
-    public ApiResponse<? extends Serializable> upload(@RequestParam MultipartFile[] files) {
-        auth.getCtx();
+    public ApiResponse<? extends Serializable> create(@RequestBody CreateOrderDtoRq createOrderDto) {
+        ClientApiContext ctx = auth.getCtx();
         try {
-            CreateOrderDto rs = new CreateOrderDto();
-            rs.setUuid(UUID.randomUUID());
-            rs.setStatus(OrderStatus.CREATED);
+            OrdersTranslateEntity order = orderService.createOrder(ctx.getUserEntity(), createOrderDto.getOrderEntity());
+            SingleOrderTranlsate rs = SingleOrderTranlsate.fromEntity(order);
             return success(rs);
         } catch (DuplicateKeyException e) {
-            return error("Пользователь с таким email уже существует");
+            return error("Заказ с таким uuid уже существует");
         } catch (Exception e) {
-            return error("Ошибка загрузки");
+            return error("Ошибка создания заказа");
+        }
+    }
+
+    @PostMapping("/getMyOrders")
+    public ApiResponse<? extends Serializable> getUserOrders(@RequestBody PaginatedRequest rq) {
+        ClientApiContext ctx = auth.getCtx();
+        try {
+            UserEntity user = ctx.getUserEntity();
+            List<OrdersTranslateEntity> list = orderService.getOrderList(user, rq.getOffset(), rq.getMax());
+            long total = orderService.getOrderListTotal(user);
+            PaginatedResponse<SingleOrderTranlsate> rs = MultipleOrderTranslate.builder()
+                    .total(total)
+                    .items(
+                            list.stream()
+                                    .map(SingleOrderTranlsate::fromEntity)
+                                    .collect(Collectors.toList())
+                    )
+                    .build();
+            return success(rs);
+        } catch (DuplicateKeyException e) {
+            return error("Заказ с таким uuid уже существует");
+        } catch (Exception e) {
+            return error("Ошибка создания заказа");
         }
     }
 }
