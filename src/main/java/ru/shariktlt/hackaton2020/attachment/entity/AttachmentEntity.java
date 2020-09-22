@@ -16,6 +16,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Getter
 @Setter
+@Builder
 public class AttachmentEntity {
 
     @Id
