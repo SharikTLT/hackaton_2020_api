@@ -5,6 +5,8 @@ import ru.shariktlt.hackaton2020.order.entity.OrdersTranslateEntity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -26,6 +28,8 @@ public class SingleOrderTranlsate implements Serializable {
     private Long pages;
 
     private UUID filePackageOriginals;
+
+    private List<String> actions = new LinkedList<>();
 
 
     public static SingleOrderTranlsate fromEntity(OrdersTranslateEntity entity) {

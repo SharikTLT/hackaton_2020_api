@@ -16,6 +16,7 @@ import ru.shariktlt.hackaton2020.user.entity.UserEntity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static ru.shariktlt.hackaton2020.core.dto.ApiResponse.error;
@@ -31,6 +32,9 @@ public class OrderEndpoint {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TranslateOrderViewActions translateOrderViewActions;
 
     @PostMapping("/create")
     public ApiResponse<? extends Serializable> create(@RequestBody CreateOrderDtoRq createOrderDto) {
@@ -62,6 +66,22 @@ public class OrderEndpoint {
                     )
                     .build();
             return success(rs);
+        } catch (DuplicateKeyException e) {
+            return error("Заказ с таким uuid уже существует");
+        } catch (Exception e) {
+            return error("Ошибка создания заказа");
+        }
+    }
+
+    @PostMapping("/view/{id}")
+    public ApiResponse<? extends Serializable> view(@PathVariable("id") UUID id) {
+        ClientApiContext ctx = auth.getCtx();
+        try {
+            UserEntity user = ctx.getUserEntity();
+
+            OrdersTranslateEntity order = orderService.getOrder(id, ctx);
+
+            return success(translateOrderViewActions.enrichForActions(order, ctx));
         } catch (DuplicateKeyException e) {
             return error("Заказ с таким uuid уже существует");
         } catch (Exception e) {

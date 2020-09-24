@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.shariktlt.hackaton2020.core.enums.GroupsEnum;
 import ru.shariktlt.hackaton2020.user.UserService;
 import ru.shariktlt.hackaton2020.user.entity.UserEntity;
 
@@ -45,5 +46,9 @@ public class ClientApiContext {
 
     public boolean inGroup(String group) {
         return isAuthorized() && groups.contains(group);
+    }
+
+    public boolean inGroup(GroupsEnum group) {
+        return isAuthorized() && groups.contains(group.getName());
     }
 }

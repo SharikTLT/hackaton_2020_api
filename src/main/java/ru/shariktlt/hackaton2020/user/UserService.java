@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import ru.shariktlt.hackaton2020.core.enums.GroupsEnum;
 import ru.shariktlt.hackaton2020.user.da.UserGroupsRepository;
 import ru.shariktlt.hackaton2020.user.da.UserRepository;
 import ru.shariktlt.hackaton2020.user.da.UserSessionRepository;
@@ -84,10 +85,15 @@ public class UserService {
     }
 
     public Set<String> getUserGroups(long userId) {
-        return userGroupsRepository.findByUserId(userId)
+        Set<String> groups = userGroupsRepository.findByUserId(userId)
                 .stream()
                 .map(UserGroupsEntity::getGroup)
                 .collect(Collectors.toSet());
+
+        if (groups.isEmpty()) {
+            groups.add(GroupsEnum.USER.getName()); //при отсутствии членства в группах, присваиваем группу по умолчанию: user
+        }
+        return groups;
     }
 
     public UserEntity getUser(Long id) {

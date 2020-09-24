@@ -8,7 +8,9 @@ import java.util.Arrays;
 public enum GroupsEnum {
     ANY("*"),
     ADMIN("admin"),
-    USER("user");
+    USER("user"),
+    TRANSLATOR("translator"),
+    NOTARIUS("notarius");
 
     private String name;
 
