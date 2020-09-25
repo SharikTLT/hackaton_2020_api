@@ -97,7 +97,7 @@
                         <artifactId>liquibase-maven-plugin</artifactId>
                         <version>3.8.0</version>
                         <configuration>
-                            <changeLogFile>db/changeLog.xml</changeLogFile>
+                            <changeLogFile>src/main/resources/db/changeLog.xml</changeLogFile>
                             <driver>org.postgresql.Driver</driver>
                             <url>jdbc:postgresql://hackaton.shariktlt.ru:5432/hackaton</url>
                             <username>hackaton</username>
