@@ -3,6 +3,7 @@ package ru.shariktlt.hackaton2020.order;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import ru.shariktlt.hackaton2020.core.enums.GroupsEnum;
 import ru.shariktlt.hackaton2020.core.service.ClientApiContext;
@@ -28,11 +29,11 @@ public class OrderService {
     }
 
     public List<OrdersTranslateEntity> getOrderList(UserEntity user, int page, int limit) {
-        return orderTranslateRepository.findOrdersByClient(user.getId(), PageRequest.of(page, limit));
+        return orderTranslateRepository.findAllOrdersByClient(user, PageRequest.of(page, limit, Sort.by("created").descending()));
     }
 
     public long getOrderListTotal(UserEntity user) {
-        return orderTranslateRepository.countOrdersByClient(user.getId());
+        return orderTranslateRepository.countOrdersByClient(user);
     }
 
     @SneakyThrows

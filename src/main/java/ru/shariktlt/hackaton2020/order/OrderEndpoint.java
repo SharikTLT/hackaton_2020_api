@@ -11,6 +11,8 @@ import ru.shariktlt.hackaton2020.core.service.ClientApiContext;
 import ru.shariktlt.hackaton2020.order.dto.CreateOrderDtoRq;
 import ru.shariktlt.hackaton2020.order.dto.MultipleOrderTranslate;
 import ru.shariktlt.hackaton2020.order.dto.SingleOrderTranlsate;
+import ru.shariktlt.hackaton2020.order.enrich.MyOrderViewEnrich;
+import ru.shariktlt.hackaton2020.order.enrich.TranslateOrderViewEnrich;
 import ru.shariktlt.hackaton2020.order.entity.OrdersTranslateEntity;
 import ru.shariktlt.hackaton2020.user.entity.UserEntity;
 
@@ -34,7 +36,10 @@ public class OrderEndpoint {
     private OrderService orderService;
 
     @Autowired
-    private TranslateOrderViewActions translateOrderViewActions;
+    private TranslateOrderViewEnrich translateOrderViewEnrich;
+
+    @Autowired
+    private MyOrderViewEnrich myOrderViewEnrich;
 
     @PostMapping("/create")
     public ApiResponse<? extends Serializable> create(@RequestBody CreateOrderDtoRq createOrderDto) {
@@ -61,7 +66,9 @@ public class OrderEndpoint {
                     .total(total)
                     .items(
                             list.stream()
-                                    .map(SingleOrderTranlsate::fromEntity)
+                                    .map(entity -> {
+                                        return myOrderViewEnrich.enrichData(entity, ctx);
+                                    })
                                     .collect(Collectors.toList())
                     )
                     .build();
@@ -81,7 +88,7 @@ public class OrderEndpoint {
 
             OrdersTranslateEntity order = orderService.getOrder(id, ctx);
 
-            return success(translateOrderViewActions.enrichForActions(order, ctx));
+            return success(translateOrderViewEnrich.enrichForActions(order, ctx));
         } catch (DuplicateKeyException e) {
             return error("Заказ с таким uuid уже существует");
         } catch (Exception e) {

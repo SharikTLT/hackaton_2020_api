@@ -31,6 +31,10 @@ public class SingleOrderTranlsate implements Serializable {
 
     private List<String> actions = new LinkedList<>();
 
+    private ClientResultView clientResultView;
+
+    private String statusDescription;
+
 
     public static SingleOrderTranlsate fromEntity(OrdersTranslateEntity entity) {
         return builder()

@@ -1,0 +1,10 @@
+---
+localDictionary:
+  statusDescription:
+    PAYED: "Скоро наши специалисты возьмут ваш заказ в работу"
+  statusTitles:
+    PAYED: "Заказ оплачен"
+  clientStatusDescription:
+    PAYED: "Оплачен"
+    PROCESSING: "в работе"
+    COMPLETED: "Готов"
